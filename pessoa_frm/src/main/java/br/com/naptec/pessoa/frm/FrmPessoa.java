@@ -1,18 +1,19 @@
 package br.com.naptec.pessoa.frm;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JButton;
+import javax.swing.border.EmptyBorder;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import br.com.naptec.base_dados.beans.Pessoa;
+import services.PessoaService;
 
 public class FrmPessoa extends JFrame {
 
@@ -21,6 +22,8 @@ public class FrmPessoa extends JFrame {
 	private JTextField txtNome;
 	private JTextField txtIdade;
 	private JTextField txtEmail;
+	
+	private PessoaService service;
 
 	/**
 	 * Launch the application.
@@ -42,6 +45,9 @@ public class FrmPessoa extends JFrame {
 	 * Create the frame.
 	 */
 	public FrmPessoa() {
+		// Instaciar o objeto service da classe PessoaService.
+		service = new PessoaService();
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 228);
 		contentPane = new JPanel();
@@ -94,11 +100,32 @@ public class FrmPessoa extends JFrame {
 		btnLimpar.setBounds(10, 151, 89, 23);
 		contentPane.add(btnLimpar);
 		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setBounds(109, 151, 89, 23);
-		contentPane.add(btnNewButton);
+		JButton btnGravar = new JButton("Gravar");
+		btnGravar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				gravar();
+			}
+		});
+		btnGravar.setBounds(109, 151, 89, 23);
+		contentPane.add(btnGravar);
 	}
 	
+	protected void gravar() {
+		try {
+			Pessoa p = new Pessoa();
+			
+			// O método getText() devolve uma String com o valor do JTextField.
+			p.setNome(txtNome.getText());
+			p.setEmail(txtEmail.getText());
+			p.setIdade(Integer.parseInt(txtIdade.getText()));
+			
+			service.gravar(p);
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(this, ex.getMessage());
+		}
+		
+	}
+
 	protected void LimparCampos() {
 		/*
 		 * setText(String): Define o texto do elemento JTextField;
